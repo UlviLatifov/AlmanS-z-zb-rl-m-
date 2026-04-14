@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alman Sözləri Testi</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0f0f1a;
+    --card: #1a1a2e;
+    --accent: #f0c040;
+    --accent2: #e05a5a;
+    --correct: #4caf80;
+    --wrong: #e05a5a;
+    --text: #f0ede8;
+    --muted: #888;
+  }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 16px 40px;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--accent);
+    text-align: center;
+    margin-bottom: 4px;
+    letter-spacing: -0.5px;
+  }
+
+  .subtitle {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .score-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  .score-bar span { color: var(--muted); }
+  .score-bar .s-correct { color: var(--correct); }
+  .score-bar .s-wrong { color: var(--wrong); }
+  .score-bar .s-total { color: var(--accent); }
+
+  .question-card {
+    background: var(--card);
+    border: 2px solid #2a2a40;
+    border-radius: 18px;
+    padding: 24px 20px;
+    width: 100%;
+    max-width: 480px;
+    margin-bottom: 18px;
+    text-align: center;
+  }
+
+  .question-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .az-word {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+    margin-bottom: 6px;
+  }
+
+  .hint {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 480px;
+    margin-bottom: 18px;
+  }
+
+  .opt-btn {
+    background: var(--card);
+    border: 2px solid #2a2a40;
+    border-radius: 12px;
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: all 0.18s;
+    text-align: left;
+  }
+
+  .opt-btn:hover:not(:disabled) {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateX(4px);
+  }
+
+  .opt-btn.correct {
+    border-color: var(--correct);
+    background: rgba(76,175,128,0.12);
+    color: var(--correct);
+  }
+
+  .opt-btn.wrong {
+    border-color: var(--wrong);
+    background: rgba(224,90,90,0.12);
+    color: var(--wrong);
+  }
+
+  .opt-de {
+    display: block;
+    font-size: 0.98rem;
+    font-weight: 700;
+  }
+
+  .opt-az {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 400;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+
+  .opt-btn:hover:not(:disabled) .opt-az { opacity: 0.85; color: inherit; }
+  .opt-btn.correct .opt-az { color: inherit; opacity: 0.8; }
+  .opt-btn.wrong .opt-az { color: inherit; opacity: 0.8; }
+
+  .feedback-box {
+    width: 100%;
+    max-width: 480px;
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 14px;
+    display: none;
+  }
+
+  .feedback-box.show { display: block; }
+  .feedback-box.correct { background: rgba(76,175,128,0.15); color: var(--correct); border: 1.5px solid var(--correct); }
+  .feedback-box.wrong { background: rgba(224,90,90,0.15); color: var(--wrong); border: 1.5px solid var(--wrong); }
+
+  .next-btn {
+    background: var(--accent);
+    border: none;
+    border-radius: 12px;
+    color: #111;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 14px 32px;
+    cursor: pointer;
+    display: none;
+    transition: transform 0.15s;
+    margin-bottom: 10px;
+  }
+
+  .next-btn:hover { transform: scale(1.04); }
+  .next-btn.show { display: block; }
+
+  .progress-wrap {
+    width: 100%;
+    max-width: 480px;
+    background: #2a2a40;
+    border-radius: 99px;
+    height: 6px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+
+  .end-card {
+    background: var(--card);
+    border: 2px solid var(--accent);
+    border-radius: 18px;
+    padding: 32px 24px;
+    width: 100%;
+    max-width: 480px;
+    text-align: center;
+    display: none;
+  }
+
+  .end-card.show { display: block; }
+  .end-card h2 { font-size: 1.8rem; font-weight: 900; color: var(--accent); margin-bottom: 8px; }
+  .end-card p { color: var(--muted); margin-bottom: 20px; font-size: 0.95rem; }
+  .end-card .big-score { font-size: 3rem; font-weight: 900; color: var(--text); margin: 12px 0; }
+
+  .restart-btn {
+    background: var(--accent);
+    border: none;
+    border-radius: 12px;
+    color: #111;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 14px 32px;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .restart-btn:hover { transform: scale(1.04); }
+
+  .q-counter {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+
+  .rank-badge {
+    font-size: 3.5rem;
+    margin-bottom: 6px;
+    animation: pop 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
+  }
+  @keyframes pop { 0%{transform:scale(0)} 100%{transform:scale(1)} }
+  .end-card h2 { font-size: 1.4rem; font-weight: 900; color: var(--accent); margin-bottom: 8px; }
+  .end-card p { color: var(--muted); margin-bottom: 16px; font-size: 0.9rem; }
+  .end-card .big-score { font-size: 2.6rem; font-weight: 900; color: var(--text); margin: 8px 0 12px; }
+  .rank-bar-wrap {
+    width: 100%; background: #2a2a40; border-radius: 99px; height: 10px; margin-bottom: 14px; overflow:hidden;
+  }
+  .rank-bar-fill {
+    height: 100%; border-radius: 99px; background: var(--accent);
+    transition: width 1s ease; width: 0%;
+  }
+  .rank-levels {
+    display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; width: 100%;
+  }
+  .rank-row {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.8rem; color: var(--muted); padding: 6px 10px; border-radius: 8px;
+    border: 1.5px solid transparent;
+  }
+  .rank-row.active {
+    color: var(--text); border-color: var(--accent); background: rgba(240,192,64,0.08);
+    font-weight: 700;
+  }
+  .rank-row .ricon { font-size: 1.1rem; width: 24px; text-align:center; }
+  .rank-row .rrange { margin-left: auto; font-size: 0.75rem; opacity:0.6; }
+</style>
+</head>
+<body>
+
+<h1>🇩🇪 Alman Sözləri Testi</h1>
+<p class="subtitle">Azərbaycancasını oxu → Almancasını seç</p>
+
+<div class="score-bar">
+  <span>✅ <span class="s-correct" id="scoreCorrect">0</span></span>
+  <span>❌ <span class="s-wrong" id="scoreWrong">0</span></span>
+  <span>📝 <span class="s-total" id="scoreTotal">0</span></span>
+</div>
+
+<div class="progress-wrap">
+  <div class="progress-fill" id="progressFill" style="width:0%"></div>
+</div>
+
+<div class="q-counter" id="qCounter">Sual 1 / 20</div>
+
+<div class="question-card" id="questionCard">
+  <div class="question-label">Bu sözün almancası nədir?</div>
+  <div class="az-word" id="azWord">—</div>
+  <div class="hint" id="hintText"></div>
+</div>
+
+<div class="options" id="optionsDiv"></div>
+
+<div class="feedback-box" id="feedbackBox"></div>
+<button class="next-btn" id="nextBtn" onclick="nextQuestion()">Növbəti →</button>
+
+<div class="end-card" id="endCard">
+  <div class="rank-badge" id="rankBadge"></div>
+  <h2 id="rankTitle"></h2>
+  <div class="big-score" id="finalScore">—</div>
+  <div class="rank-bar-wrap"><div class="rank-bar-fill" id="rankBarFill"></div></div>
+  <p id="finalMsg"></p>
+  <div class="rank-levels" id="rankLevels"></div>
+  <button class="restart-btn" onclick="restartQuiz()">Yenidən Başla 🔄</button>
+</div>
+
+<script>
+const allWords = [
+  ["zəngin, çeşidli","reichhaltig"],
+  ["kiçik nahar yəməyi","kleine Mittagsmahlzeit"],
+  ["istifadə","die Benutzung"],
+  ["əlavə xərclər","Zusatzkosten"],
+  ["sahildən aralı","entfernt vom Strand"],
+  ["malik olmaq, sahib olmaq","verfügen über Akk"],
+  ["şirin su hovuzu, baseyn","das Süsswasserschwimmbecken"],
+  ["uşaq hovuzu","das Kinderbecken"],
+  ["ödəmə qarşılığında","gegen Bezahlung"],
+  ["yarım pansiyon","Halbpension"],
+  ["əhəmiyyətli yarmarka və bank şəhəri","eine bedeutende Messe und Bankenstadt"],
+  ["şəhərətrafı gəzinti","die Stadtrundfahrt"],
+  ["bundan başqa","ausserdem"],
+  ["qərar vermək, qərarlaşmaq","sich entscheiden"],
+  ["mənzərə","die Landschaft"],
+  ["qalma yeri, qonaqlama","die Unterkunft"],
+  ["görməli yerlər","die Sehenswürdigkeiten"],
+  ["təmizlik","die Sauberkeit"],
+  ["milliyyət","die Nationalität"],
+  ["milli bayraqlar","die Nationalfahnen"],
+  ["rezerv etmək, yer ayırtmaq","Buchen"],
+  ["içində olmaq, daxil olmaq","enthalten"],
+  ["məsləhət görmək","beraten"],
+  ["sərfəli təkliflər","günstige Angebote"],
+  ["haqlı olmaq","recht haben"],
+  ["baxmaq, cədvələ baxıb demək","nachsehen"],
+  ["qumlu sahil","der Sandstrand"],
+  ["yelkən məktəbi","die Segelschule"],
+  ["səyahət sənədləri","die Reiseunterlagen"],
+  ["hazırlamaq","fertig machen"],
+  ["peyk televiziyası","der Satelliten Fernseher"],
+  ["bilet","die Fahrkarte"],
+  ["tıxac","der Stau"],
+  ["konduktor, biletçi","der Schaffner"],
+  ["məlumat","die Auskunft"],
+  ["gediş planı, cədvəl","der Fahrplan"],
+  ["bilet kassası","der Fahrkartenschalter"],
+  ["pasport yoxlaması","die Passkontrolle"],
+  ["bələdçi kitab","der Reiseführer"],
+  ["tur rəhbəri, səyahət rəhbəri","der Reiseleiter"],
+  ["dəyişmək","wechseln"],
+  ["nəqliyyat hərəkəti elanları","Verkehrsdurchsagen"],
+  ["enmək, eniş etmək","Landen"]
+];
+
+let questions = [];
+let current = 0;
+let correct = 0;
+let wrong = 0;
+let answered = false;
+let TOTAL = allWords.length;
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function buildQuestions() {
+  const pool = shuffle([...allWords]);
+  const deToAz = {};
+  allWords.forEach(([az, de]) => { deToAz[de] = az; });
+  questions = pool.map(([az, de]) => {
+    const wrong4 = shuffle(allWords.filter(w => w[1] !== de)).slice(0, 3).map(w => w[1]);
+    const opts = shuffle([de, ...wrong4]);
+    const optsWithAz = opts.map(d => ({ de: d, az: deToAz[d] || '' }));
+    return { az, de, opts: optsWithAz };
+  });
+}
+
+function render() {
+  const q = questions[current];
+  document.getElementById('azWord').textContent = q.az;
+  document.getElementById('hintText').textContent = '';
+  document.getElementById('qCounter').textContent = `Sual ${current + 1} / ${TOTAL}`;
+  document.getElementById('progressFill').style.width = `${(current / TOTAL) * 100}%`;
+
+  const opts = document.getElementById('optionsDiv');
+  opts.innerHTML = '';
+  q.opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.innerHTML = `<span class="opt-de">${opt.de}</span><span class="opt-az" style="display:none">${opt.az}</span>`;
+    btn.onclick = () => checkAnswer(opt.de, q.de, btn);
+    opts.appendChild(btn);
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  fb.className = 'feedback-box';
+  fb.textContent = '';
+  document.getElementById('nextBtn').className = 'next-btn';
+  answered = false;
+  updateScore();
+}
+
+function checkAnswer(chosen, correct_ans, btn) {
+  if (answered) return;
+  answered = true;
+
+  const allBtns = document.querySelectorAll('.opt-btn');
+  allBtns.forEach(b => {
+    b.disabled = true;
+    const deSpan = b.querySelector('.opt-de');
+    const azSpan = b.querySelector('.opt-az');
+    if (azSpan) azSpan.style.display = 'block';
+    if (deSpan && deSpan.textContent === correct_ans) b.classList.add('correct');
+  });
+
+  const fb = document.getElementById('feedbackBox');
+  if (chosen === correct_ans) {
+    correct++;
+    btn.classList.add('correct');
+    fb.textContent = '✅ Düzdür! "' + correct_ans + '"';
+    fb.className = 'feedback-box correct show';
+  } else {
+    wrong++;
+    btn.classList.add('wrong');
+    fb.textContent = '❌ Səhv! Doğru cavab: "' + correct_ans + '"';
+    fb.className = 'feedback-box wrong show';
+  }
+
+  document.getElementById('nextBtn').className = 'next-btn show';
+  updateScore();
+}
+
+function nextQuestion() {
+  current++;
+  if (current >= TOTAL) {
+    showEnd();
+  } else {
+    render();
+  }
+}
+
+const RANKS = [
+  { min:0,  max:19,  icon:'🥉', title:'Yeni Başlayan',      msg:'Hələ başlanğıcsınız. Sözlərə yenidən baxın!' },
+  { min:20, max:39,  icon:'📖', title:'Öyrənən',            msg:'Az tanıyırsınız. Daha çox oxuyun!' },
+  { min:40, max:54,  icon:'🎯', title:'İrəliləyən',         msg:'Yarıya çatdınız. Davam edin!' },
+  { min:55, max:69,  icon:'⭐', title:'Orta Səviyyə',       msg:'Yaxşı gedir! Bir az daha çalışın.' },
+  { min:70, max:79,  icon:'🌟', title:'Yaxşı Bilirsiz',     msg:'Əla! Çox az qaldı zirvəyə!' },
+  { min:80, max:89,  icon:'🏅', title:'Çox Yaxşı',         msg:'Sözləri yaxşı mənimsəmişsiniz!' },
+  { min:90, max:94,  icon:'🥈', title:'Ekspert',            msg:'Demək olar ki, hamısını bilirsiniz!' },
+  { min:95, max:99,  icon:'🥇', title:'Usta',              msg:'Əla nəticə! Az qaldı mükəmmələ!' },
+  { min:100,max:100, icon:'👑', title:'Alman Dili Ustadı',  msg:'Hamısını bildirdiniz! Möhtəşəm!' },
+];
+
+function showEnd() {
+  document.getElementById('questionCard').style.display = 'none';
+  document.getElementById('optionsDiv').style.display = 'none';
+  document.getElementById('feedbackBox').className = 'feedback-box';
+  document.getElementById('nextBtn').className = 'next-btn';
+  document.getElementById('qCounter').textContent = '';
+
+  const pct = Math.round((correct / TOTAL) * 100);
+  const rank = RANKS.find(r => pct >= r.min && pct <= r.max) || RANKS[0];
+
+  document.getElementById('rankBadge').textContent = rank.icon;
+  document.getElementById('rankTitle').textContent = rank.title;
+  document.getElementById('finalScore').textContent = `${correct} / ${TOTAL}  (${pct}%)`;
+  document.getElementById('finalMsg').textContent = rank.msg;
+  document.getElementById('progressFill').style.width = '100%';
+
+  // rank levels list
+  const levelsDiv = document.getElementById('rankLevels');
+  levelsDiv.innerHTML = RANKS.map(r => `
+    <div class="rank-row ${r.title === rank.title ? 'active' : ''}">
+      <span class="ricon">${r.icon}</span>
+      <span>${r.title}</span>
+      <span class="rrange">${r.min}–${r.max === 100 ? '100' : r.max}%</span>
+    </div>
+  `).join('');
+
+  document.getElementById('endCard').className = 'end-card show';
+  setTimeout(() => {
+    document.getElementById('rankBarFill').style.width = pct + '%';
+  }, 100);
+}
+
+function restartQuiz() {
+  current = 0; correct = 0; wrong = 0;
+  document.getElementById('questionCard').style.display = '';
+  document.getElementById('optionsDiv').style.display = '';
+  document.getElementById('endCard').className = 'end-card';
+  buildQuestions();
+  render();
+}
+
+function updateScore() {
+  document.getElementById('scoreCorrect').textContent = correct;
+  document.getElementById('scoreWrong').textContent = wrong;
+  document.getElementById('scoreTotal').textContent = current + (answered ? 1 : 0);
+}
+
+buildQuestions();
+render();
+</script>
+</body>
+</html>
