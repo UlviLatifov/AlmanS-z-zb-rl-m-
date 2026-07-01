@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>// terminal :: terminologiya</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0c1118;
+    --bg-raised: #121927;
+    --bg-inset: #090d13;
+    --hairline: #24344a;
+    --hairline-soft: #1a2434;
+    --ink: #d7e2ef;
+    --ink-dim: #7c8ba3;
+    --ink-faint: #4a5773;
+    --amber: #e8a33d;
+    --amber-dim: #6b5127;
+    --teal: #4fc3b0;
+    --coral: #e8654f;
+    --violet: #8b8fe8;
+    --mono-display: 'JetBrains Mono', monospace;
+    --mono-body: 'IBM Plex Mono', monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--mono-body);
+    line-height:1.5;
+    min-height:100vh;
+    background-image:
+      linear-gradient(var(--hairline-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--hairline-soft) 1px, transparent 1px);
+    background-size: 48px 48px;
+    background-position: -1px -1px;
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
+  }
+
+  /* ===== Top bar: packet header styled ===== */
+  .packet-bar{
+    position:sticky; top:0; z-index:50;
+    background:rgba(9,13,19,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--hairline);
+  }
+  .packet-row{
+    max-width:1100px; margin:0 auto;
+    display:flex; align-items:center; gap:0;
+    padding:0 20px;
+    height:56px;
+  }
+  .packet-seg{
+    display:flex; align-items:center; gap:8px;
+    padding:0 16px; height:100%;
+    border-right:1px solid var(--hairline-soft);
+    font-size:11px; letter-spacing:0.08em; color:var(--ink-dim);
+    white-space:nowrap;
+  }
+  .packet-seg:first-child{padding-left:0;}
+  .packet-seg b{color:var(--amber); font-weight:700; font-size:12px;}
+  .packet-seg.grow{flex:1; border-right:none; justify-content:flex-end;}
+  .brand{
+    font-family:var(--mono-display); font-weight:800; font-size:14px;
+    color:var(--ink); letter-spacing:0.02em;
+  }
+  .brand .dot{color:var(--amber);}
+
+  /* ===== Hero ===== */
+  .hero{
+    max-width:1100px; margin:0 auto;
+    padding:64px 20px 40px;
+  }
+  .hero-eyebrow{
+    font-size:11px; letter-spacing:0.16em; text-transform:uppercase;
+    color:var(--ink-faint); margin-bottom:18px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .hero-eyebrow::before{
+    content:''; width:8px; height:8px; background:var(--amber);
+    display:inline-block; animation:blink 1.4s steps(2) infinite;
+  }
+  @keyframes blink{50%{opacity:0.15;}}
+  .hero h1{
+    font-family:var(--mono-display); font-weight:800;
+    font-size:clamp(28px, 5vw, 46px);
+    line-height:1.08; letter-spacing:-0.01em;
+    color:var(--ink);
+    max-width:820px;
+  }
+  .hero h1 .amber{color:var(--amber);}
+  .hero p{
+    margin-top:18px; max-width:620px;
+    color:var(--ink-dim); font-size:15px; line-height:1.65;
+  }
+  .hero-stats{
+    display:flex; gap:0; margin-top:36px;
+    border:1px solid var(--hairline); border-radius:2px;
+    overflow:hidden; max-width:640px;
+  }
+  .hero-stat{
+    flex:1; padding:14px 16px; border-right:1px solid var(--hairline);
+    background:var(--bg-raised);
+  }
+  .hero-stat:last-child{border-right:none;}
+  .hero-stat .n{
+    font-family:var(--mono-display); font-weight:700; font-size:22px;
+    color:var(--amber);
+  }
+  .hero-stat .l{
+    font-size:10px; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--ink-faint); margin-top:4px;
+  }
+
+  /* ===== Mode tabs ===== */
+  .shell{max-width:1100px; margin:0 auto; padding:0 20px 100px;}
+  .mode-tabs{
+    display:flex; gap:2px; margin-bottom:28px;
+    border:1px solid var(--hairline); border-radius:2px; overflow:hidden;
+    width:fit-content;
+  }
+  .mode-tab{
+    font-family:var(--mono-body); font-size:12.5px; font-weight:500;
+    letter-spacing:0.03em;
+    padding:10px 18px; background:var(--bg-raised); color:var(--ink-dim);
+    border:none; cursor:pointer; transition:background 0.15s, color 0.15s;
+  }
+  .mode-tab.active{background:var(--amber); color:#1a1305; font-weight:700;}
+  .mode-tab:not(.active):hover{background:#182234; color:var(--ink);}
+
+  .dir-tab{
+    font-family:var(--mono-body); font-size:12px; font-weight:500;
+    letter-spacing:0.02em;
+    padding:8px 14px; background:var(--bg-raised); color:var(--ink-dim);
+    border:none; cursor:pointer; transition:background 0.15s, color 0.15s;
+  }
+  .dir-tab.active{background:var(--teal); color:#08201b; font-weight:700;}
+  .dir-tab:not(.active):hover{background:#182234; color:var(--ink);}
+
+  .panel{display:none;}
+  .panel.active{display:block; animation:fadein 0.25s ease;}
+  @keyframes fadein{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+
+  /* ===== Category filter chips ===== */
+  .cat-filters{
+    display:flex; flex-wrap:wrap; gap:8px; margin-bottom:24px;
+  }
+  .chip{
+    font-family:var(--mono-body); font-size:11.5px;
+    padding:7px 13px; border-radius:999px;
+    border:1px solid var(--hairline); background:var(--bg-raised);
+    color:var(--ink-dim); cursor:pointer;
+    transition:all 0.15s;
+  }
+  .chip:hover{border-color:var(--amber-dim); color:var(--ink);}
+  .chip.active{background:var(--amber); border-color:var(--amber); color:#1a1305; font-weight:700;}
+
+  /* ===== Flashcard ===== */
+  .card-zone{
+    display:flex; flex-direction:column; align-items:center;
+    padding:20px 0 10px;
+  }
+  .card-tag{
+    font-size:11px; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--ink-faint); margin-bottom:16px;
+  }
+  .flashcard{
+    width:100%; max-width:560px; min-height:280px;
+    background:var(--bg-raised);
+    border:1px solid var(--hairline);
+    border-radius:4px;
+    display:flex; align-items:center; justify-content:center;
+    text-align:center; padding:36px 28px;
+    cursor:pointer; position:relative;
+    transition:border-color 0.2s;
+  }
+  .flashcard:hover{border-color:var(--amber-dim);}
+  .flashcard::before{
+    content:attr(data-index);
+    position:absolute; top:14px; left:16px;
+    font-size:10px; color:var(--ink-faint); letter-spacing:0.05em;
+  }
+  .flashcard::after{
+    content:'toxun / klikləyin';
+    position:absolute; bottom:14px; right:16px;
+    font-size:10px; color:var(--ink-faint); letter-spacing:0.05em;
+  }
+  .flashcard .term{
+    font-family:var(--mono-display); font-weight:700;
+    font-size:clamp(22px,4vw,32px); color:var(--ink);
+    letter-spacing:-0.01em;
+  }
+  .flashcard .def{
+    font-size:15px; color:var(--ink-dim); line-height:1.7;
+    max-width:460px;
+  }
+  .flashcard.flipped .def{color:var(--teal);}
+
+  .card-controls{
+    display:flex; gap:10px; margin-top:22px; width:100%; max-width:560px;
+  }
+  .btn{
+    font-family:var(--mono-body); font-size:13px; font-weight:600;
+    padding:12px 18px; border-radius:3px; border:1px solid var(--hairline);
+    background:var(--bg-raised); color:var(--ink); cursor:pointer;
+    transition:all 0.15s; flex:1;
+  }
+  .btn:hover{border-color:var(--ink-faint);}
+  .btn-know{border-color:#2a5147; color:var(--teal);}
+  .btn-know:hover{background:#12241f;}
+  .btn-dontknow{border-color:#5a2e26; color:var(--coral);}
+  .btn-dontknow:hover{background:#241412;}
+  .btn-next{background:var(--amber); color:#1a1305; border-color:var(--amber);}
+  .btn-next:hover{opacity:0.9;}
+  .btn-ghost{
+    background:transparent; border-color:transparent; color:var(--ink-faint);
+    flex:0 0 auto; text-align:center;
+  }
+  .btn-ghost:hover{color:var(--ink-dim);}
+
+  .card-footer-row{
+    display:flex; justify-content:center; margin-top:14px;
+  }
+
+  /* ===== Quiz ===== */
+  .quiz-head{
+    display:flex; justify-content:space-between; align-items:baseline;
+    margin-bottom:18px; flex-wrap:wrap; gap:10px;
+  }
+  .quiz-score{
+    font-size:12px; color:var(--ink-dim);
+  }
+  .quiz-score b{color:var(--amber); font-family:var(--mono-display);}
+  .quiz-q{
+    background:var(--bg-raised); border:1px solid var(--hairline);
+    border-radius:4px; padding:32px 28px; margin-bottom:18px;
+    max-width:640px;
+  }
+  .quiz-q-label{
+    font-size:10px; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--ink-faint); margin-bottom:10px;
+  }
+  .quiz-q-text{
+    font-size:17px; color:var(--ink); line-height:1.6;
+  }
+  .quiz-options{
+    display:grid; gap:10px; max-width:640px;
+  }
+  .option{
+    font-family:var(--mono-body); font-size:14px; text-align:left;
+    padding:14px 16px; background:var(--bg-raised);
+    border:1px solid var(--hairline); border-radius:3px;
+    color:var(--ink); cursor:pointer; display:flex; gap:12px;
+    transition:all 0.15s;
+  }
+  .option:hover{border-color:var(--amber-dim);}
+  .option .k{color:var(--ink-faint); font-weight:700;}
+  .option.correct{border-color:var(--teal); background:#0f221e; color:var(--teal);}
+  .option.wrong{border-color:var(--coral); background:#241412; color:var(--coral);}
+  .option.disabled{pointer-events:none; opacity:0.55;}
+  .option.disabled.correct, .option.disabled.wrong{opacity:1;}
+  .quiz-next-row{margin-top:18px; max-width:640px;}
+  .quiz-feedback{
+    font-size:13px; margin-top:12px; color:var(--ink-dim); min-height:18px;
+  }
+
+  /* ===== List view ===== */
+  .term-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(250px,1fr));
+    gap:1px; background:var(--hairline); border:1px solid var(--hairline);
+    border-radius:4px; overflow:hidden;
+  }
+  .term-card{
+    background:var(--bg-raised); padding:16px 18px;
+  }
+  .term-card .t{
+    font-family:var(--mono-display); font-weight:700; font-size:14.5px;
+    color:var(--ink); margin-bottom:6px;
+  }
+  .term-card .d{
+    font-size:12.5px; color:var(--ink-dim); line-height:1.55;
+  }
+  .term-card .mastered-mark{color:var(--teal); font-size:11px; margin-left:6px;}
+
+  section.cat-block{margin-bottom:36px;}
+  .cat-title{
+    font-family:var(--mono-display); font-weight:700; font-size:14px;
+    color:var(--amber); text-transform:uppercase; letter-spacing:0.05em;
+    margin-bottom:12px; padding-bottom:8px; border-bottom:1px solid var(--hairline-soft);
+    display:flex; justify-content:space-between; align-items:baseline;
+  }
+  .cat-title .cnt{color:var(--ink-faint); font-weight:400; font-size:11px; text-transform:none;}
+
+  .empty-state{
+    text-align:center; padding:60px 20px; color:var(--ink-faint);
+  }
+  .empty-state b{color:var(--amber);}
+
+  footer{
+    max-width:1100px; margin:0 auto; padding:24px 20px 60px;
+    color:var(--ink-faint); font-size:11px; border-top:1px solid var(--hairline-soft);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  }
+
+  @media (max-width:640px){
+    .packet-seg{padding:0 10px; font-size:10px;}
+    .card-controls{flex-wrap:wrap;}
+  }
+</style>
+</head>
+<body>
+
+<div class="packet-bar">
+  <div class="packet-row">
+    <div class="packet-seg"><span class="brand">TERM<span class="dot">.</span>AZ</span></div>
+    <div class="packet-seg">SRC <b>İstifadəçi</b></div>
+    <div class="packet-seg">DST <b>Yaddaş</b></div>
+    <div class="packet-seg grow" id="liveStatus">TTL 64 · OK</div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-eyebrow">şəbəkə paketi hazırlanır</div>
+  <h1>IT və kibertəhlükəsizlik <span class="amber">terminologiyasını</span> əzbərlə</h1>
+  <p>200+ termin, 10 kateqoriya. Kartları çevir, testi həll et, yaddaşına həkk et. Hər addımın irəliləyişin yaddaşda saxlanılır — sekmeni bağlasan da yerində qalır.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="n" id="statTotal">0</div><div class="l">termin</div></div>
+    <div class="hero-stat"><div class="n" id="statCats">0</div><div class="l">kateqoriya</div></div>
+    <div class="hero-stat"><div class="n" id="statMastered">0</div><div class="l">bilirəm</div></div>
+    <div class="hero-stat"><div class="n" id="statPct">0%</div><div class="l">tərəqqi</div></div>
+  </div>
+</div>
+
+<div class="shell">
+  <div class="mode-tabs">
+    <button class="mode-tab active" data-mode="flash">Kartlar</button>
+    <button class="mode-tab" data-mode="quiz">Test</button>
+    <button class="mode-tab" data-mode="list">Bütün siyahı</button>
+  </div>
+
+  <div class="cat-filters" id="catFilters"></div>
+
+  <!-- FLASHCARD PANEL -->
+  <div class="panel active" id="panel-flash">
+    <div class="card-zone">
+      <div class="card-tag" id="flashCatTag">— </div>
+      <div class="flashcard" id="flashcard" data-index="00">
+        <div class="term" id="flashTerm">Yüklənir…</div>
+      </div>
+      <div class="card-controls">
+        <button class="btn btn-dontknow" id="btnDontKnow">✕ Bilmirəm</button>
+        <button class="btn btn-know" id="btnKnow">✓ Bilirəm</button>
+        <button class="btn btn-next" id="btnNext">Növbəti →</button>
+      </div>
+      <div class="card-footer-row">
+        <button class="btn btn-ghost" id="btnResetProgress">tərəqqini sıfırla</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ PANEL -->
+  <div class="panel" id="panel-quiz">
+    <div class="quiz-head">
+      <div class="quiz-score">Bal: <b id="quizScore">0</b> / <span id="quizAsked">0</span></div>
+      <div class="quiz-score" id="quizCatTag">—</div>
+    </div>
+    <div class="mode-tabs" style="margin-bottom:18px;">
+      <button class="dir-tab active" data-dir="def2term">Termini tap</button>
+      <button class="dir-tab" data-dir="term2def">Tərifi tap</button>
+      <button class="dir-tab" data-dir="mixed">Qarışıq</button>
+    </div>
+    <div class="quiz-q">
+      <div class="quiz-q-label" id="quizQLabel">bu tərifə uyğun termini seç</div>
+      <div class="quiz-q-text" id="quizQuestion">Yüklənir…</div>
+    </div>
+    <div class="quiz-options" id="quizOptions"></div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+    <div class="quiz-next-row">
+      <button class="btn btn-next" id="btnQuizNext" style="width:100%;">Növbəti sual →</button>
+    </div>
+  </div>
+
+  <!-- LIST PANEL -->
+  <div class="panel" id="panel-list"></div>
+</div>
+
+<footer>
+  <span>Yerli yaddaş vasitəsilə saxlanılır · yalnız bu cihazda görünür</span>
+  <span id="footRandomTerm"></span>
+</footer>
+
+<script>
+/* ================== DATA ================== */
+const DATA = {
+"Şəbəkə": [
+["IP Address","Şəbəkədə hər qurğunu tək-tək tanıdan rəqəmsal ünvan."],
+["IPv4","32 bitlik, nöqtələrlə ayrılmış (məs. 192.168.0.1) IP ünvan formatı."],
+["IPv6","128 bitlik, IPv4-ün yerini alan yeni nəsil IP ünvan formatı."],
+["MAC Address","Şəbəkə kartına zavod tərəfindən verilən unikal fiziki ünvan."],
+["Port","Bir qurğuda müəyyən xidmətə giriş üçün istifadə olunan rəqəmli 'qapı'."],
+["Protocol","Qurğuların bir-biri ilə necə əlaqə quracağını təyin edən qaydalar toplusu."],
+["TCP","Məlumatın etibarlı, ardıcıl və təsdiqli çatdırılmasını təmin edən nəqliyyat protokolu."],
+["UDP","Sürətli, lakin təsdiqsiz və etibarsız məlumat ötürmə protokolu."],
+["DNS","Domen adlarını IP ünvanlarına çevirən 'internetin telefon kitabı'."],
+["DHCP","Şəbəkədəki qurğulara avtomatik IP ünvan verən protokol."],
+["HTTP","Veb səhifələrin brauzerlə server arasında ötürülməsi üçün protokol."],
+["HTTPS","Şifrələnmiş, təhlükəsiz HTTP versiyası."],
+["URL","Bir veb resursunun tam ünvanını göstərən sətir (məs. https://sayt.az/səhifə)."],
+["Domain","İnternetdəki bir saytın oxunaqlı adı (məs. google.com)."],
+["Router","Fərqli şəbəkələr arasında məlumat paketlərini yönləndirən qurğu."],
+["Switch","Yerli şəbəkədə qurğuları bir-birinə birləşdirən və trafiki yönləndirən avadanlıq."],
+["Modem","Rəqəmsal siqnalı internet provayderinin siqnalına çevirən qurğu."],
+["Gateway","Bir şəbəkədən başqa şəbəkəyə çıxış nöqtəsi olan qurğu."],
+["NAT","Daxili şəbəkə ünvanlarını bir ictimai IP ünvanı arxasında gizlədən texnologiya."],
+["VPN","İnternet üzərindən şifrələnmiş, təhlükəsiz özəl tunel yaradan xidmət."],
+["Proxy","İstifadəçi ilə server arasında vasitəçi rolunu oynayan server."],
+["LAN","Kiçik ərazidə (ev, ofis) qurulan yerli şəbəkə."],
+["WAN","Böyük coğrafi ərazini əhatə edən geniş şəbəkə (internet kimi)."],
+["WLAN","Simsiz texnologiya ilə qurulan yerli şəbəkə."],
+["Wi-Fi","Simsiz şəbəkə əlaqəsi üçün istifadə olunan texnologiya standartı."],
+["Ethernet","Kabel vasitəsilə yerli şəbəkə qurmaq üçün istifadə olunan standart."],
+["Bandwidth","Şəbəkənin müəyyən zamanda ötürə biləcəyi maksimum məlumat həcmi."],
+["Latency","Məlumatın bir nöqtədən digərinə çatması üçün lazım olan gecikmə vaxtı."],
+["Packet","Şəbəkə üzərindən göndərilən məlumatın kiçik parçalara bölünmüş forması."],
+["Ping","Bir qurğunun şəbəkədə əlçatan olub-olmadığını yoxlayan əmr/vasitə."],
+["Traceroute","Paketin mənbədən hədəfə çatana qədər keçdiyi marşrutu göstərən vasitə."]
+],
+"Kibertəhlükəsizlik": [
+["Cybersecurity","Rəqəmsal sistemləri, şəbəkələri və məlumatları hücumlardan qorumaq sahəsi."],
+["Information Security (InfoSec)","Məlumatın məxfiliyini, bütövlüyünü və əlçatanlığını qorumaq üzrə praktikalar."],
+["CIA Triad","Məxfilik, Bütövlük və Əlçatanlıq — informasiya təhlükəsizliyinin üç əsas prinsipi."],
+["Vulnerability","Sistemdə hücum üçün istifadə edilə bilən zəiflik və ya boşluq."],
+["Threat","Bir zəiflikdən istifadə edərək zərər vura biləcək potensial təhlükə mənbəyi."],
+["Risk","Bir təhdidin zəiflikdən istifadə etmə ehtimalı və nəticədə yarana biləcək zərər."],
+["Exploit","Bir zəiflikdən (vulnerability) faktiki istifadə etmək üçün yazılan kod və ya üsul."],
+["Payload","Exploitin daxilində yerləşən, zərərli əməliyyatı icra edən əsl kod hissəsi."],
+["Attack Surface","Hücumçunun sistemə hücum edə biləcəyi bütün mümkün giriş nöqtələri."],
+["Patch","Proqram təminatındakı zəiflikləri düzəldən yeniləmə."],
+["Zero-day","Hələ heç kimə məlum olmayan və düzəldilməmiş zəiflik."],
+["CVE","İctimai şəkildə qeydə alınan zəifliklərə verilən standart identifikator."],
+["CVSS","Bir zəifliyin təhlükəlilik dərəcəsini rəqəmlə qiymətləndirən standart sistem."]
+],
+"Hücum növləri": [
+["Malware","Zərər vurmaq məqsədilə yazılmış hər növ zərərli proqram."],
+["Virus","Özünü digər fayllara əlavə edərək yayılan zərərli proqram."],
+["Worm","İstifadəçi müdaxiləsi olmadan şəbəkə üzərindən özbaşına yayılan zərərli proqram."],
+["Trojan","Zərərsiz proqram kimi görünüb daxildə zərərli funksiya gizlədən proqram."],
+["Ransomware","Qurbanın fayllarını şifrələyib açmaq üçün fidyə tələb edən zərərli proqram."],
+["Spyware","İstifadəçini xəbərsiz izləyib məlumatlarını toplayan casus proqram."],
+["Adware","İstənməyən reklamları məcburi göstərən proqram növü."],
+["Rootkit","Sistemə dərin səviyyədə daxil olub izini gizlədən zərərli alət toplusu."],
+["Botnet","Uzaqdan idarə olunan, yoluxmuş qurğulardan ibarət şəbəkə."],
+["Phishing","Saxta e-poçt və ya saytlarla istifadəçini aldadıb məlumat oğurlamaq."],
+["Spear Phishing","Konkret şəxsə və ya təşkilata hədəflənmiş, fərdiləşdirilmiş phishing hücumu."],
+["Smishing","SMS mesajları vasitəsilə həyata keçirilən phishing növü."],
+["Vishing","Telefon zəngi vasitəsilə həyata keçirilən phishing növü."],
+["Social Engineering","İnsan psixologiyasından istifadə edərək məxfi məlumatı əldə etmə üsulu."],
+["Brute Force Attack","Bütün mümkün kombinasiyaları sınayaraq şifrəni tapmağa çalışan hücum."],
+["Dictionary Attack","Əvvəlcədən hazırlanmış söz siyahısından istifadə edərək şifrəni tapma cəhdi."],
+["DDoS","Çoxlu qurğudan eyni anda hücum edərək xidməti işə yararsız hala salma."],
+["SQL Injection (SQLi)","Verilənlər bazası sorğusuna zərərli SQL kodu daxil edərək məlumatları oğurlama."],
+["Cross-Site Scripting (XSS)","Veb səhifəyə zərərli skript daxil edərək digər istifadəçilərə hücum etmə."],
+["Cross-Site Request Forgery (CSRF)","İstifadəçini xəbərsiz olaraq öz adından istənməyən əməliyyat etməyə vadar etmə."],
+["Command Injection","Tətbiqə zərərli sistem əmrləri daxil edərək server üzərində icra əldə etmə."],
+["Buffer Overflow","Yaddaş buferinin tutumundan artıq məlumat yazaraq sistemi manipulyasiya etmə."],
+["Man-in-the-Middle (MITM)","İki tərəf arasındakı əlaqəyə gizlicə daxil olub məlumatı ələ keçirmə hücumu."]
+],
+"Müdafiə": [
+["Firewall","Şəbəkə trafikini qaydalara əsasən süzgəcdən keçirən təhlükəsizlik divarı."],
+["Antivirus","Zərərli proqramları aşkarlayıb təmizləyən qoruyucu proqram."],
+["IDS","Şübhəli fəaliyyəti aşkarlayıb xəbərdarlıq edən müdaxilə aşkarlama sistemi."],
+["IPS","Şübhəli fəaliyyəti həm aşkarlayan, həm də real vaxtda bloklayan sistem."],
+["WAF","Veb tətbiqlərini spesifik hücumlardan qoruyan xüsusi firewall növü."],
+["MFA (Multi-Factor Authentication)","Giriş zamanı birdən çox təsdiqləmə üsulu tələb edən kimlik yoxlaması."],
+["2FA","İki mərhələli təsdiqləmə — parol və əlavə bir kod tələb olunması."],
+["Password Manager","İstifadəçinin şifrələrini şifrələnmiş şəkildə saxlayan və idarə edən proqram."],
+["Backup","Məlumatın itki halında bərpa etmək üçün saxlanılan ehtiyat surəti."],
+["Encryption","Məlumatı yalnız açara sahib olanların oxuya biləcəyi formaya çevirmə."],
+["Decryption","Şifrələnmiş məlumatı yenidən oxunaqlı formaya qaytarma prosesi."],
+["Hash","Məlumatdan sabit uzunluqlu, geri qaytarılmayan unikal iz (nişan) yaratma funksiyası."],
+["Salt","Hashlənmə zamanı əlavə olunan təsadüfi məlumat, təkrarlanan hash-ları önləyir."],
+["Digital Signature","Bir sənədin həqiqiliyini və müəllifini rəqəmsal yolla təsdiqləyən imza."],
+["Certificate","Bir tərəfin kimliyini üçüncü tərəfin təsdiq etdiyi rəqəmsal sənəd."],
+["SSL","Şəbəkə əlaqəsini şifrələyən, TLS-in əvvəlki nəsli olan protokol."],
+["TLS","İnternet üzərindən əlaqəni şifrələyən müasir təhlükəsizlik protokolu."]
+],
+"Kimlik və giriş": [
+["Authentication","İstifadəçinin dediyi şəxs olduğunu yoxlama prosesi (kimlik təsdiqi)."],
+["Authorization","Təsdiqlənmiş istifadəçiyə hansı əməliyyatlara icazə verildiyini müəyyən etmə."],
+["Identity","Sistemdə bir istifadəçini və ya qurğunu təmsil edən rəqəmsal şəxsiyyət."],
+["Access Control","Kimin hansı resurslara giriş əldə edə biləcəyini idarə edən mexanizm."],
+["Role-Based Access Control (RBAC)","İstifadəçilərə rollarına əsasən giriş hüquqları verən idarəetmə modeli."],
+["Least Privilege","İstifadəçiyə yalnız işi üçün lazım olan minimal icazəni vermə prinsipi."]
+],
+"Veb": [
+["Frontend","İstifadəçinin birbaşa gördüyü və istifadə etdiyi veb interfeys hissəsi."],
+["Backend","Serverdə işləyən, məlumat emalını təmin edən görünməz hissə."],
+["Client","Serverə sorğu göndərən tərəf, adətən istifadəçinin brauzeri və ya proqramı."],
+["Server","Sorğulara cavab verən və xidmət göstərən mərkəzi qurğu/proqram."],
+["API","Fərqli proqramların bir-biri ilə əlaqə qurmasını təmin edən interfeys."],
+["REST API","HTTP metodlarından istifadə edən, geniş yayılmış API arxitektura üslubu."],
+["JSON","Məlumatın oxunaqlı, mətn əsaslı formatda mübadiləsi üçün format."],
+["Cookie","Brauzerdə saxlanılan, istifadəçi haqqında məlumat daşıyan kiçik fayl."],
+["Session","İstifadəçinin sayta girişindən çıxışına qədər davam edən əlaqə müddəti."],
+["Token","İstifadəçinin kimliyini təmsil edən, giriş üçün istifadə olunan rəqəmsal açar."]
+],
+"Linux": [
+["Terminal","Əmrlərin mətn şəklində daxil edildiyi interfeys proqramı."],
+["Shell","İstifadəçi ilə əməliyyat sistemi nüvəsi arasında əlaqə quran əmr tərcüməçisi."],
+["Bash","Linuxda ən geniş istifadə olunan shell növü."],
+["Root","Linux sistemində bütün icazələrə malik olan ali istifadəçi."],
+["User","Sistemdə müəyyən icazələrlə əməliyyat aparan hesab."],
+["Directory","Faylları qruplaşdırmaq üçün istifadə olunan qovluq."],
+["File Permission","Faylın kim tərəfindən oxuna, yazıla və ya icra edilə biləcəyini təyin edən icazə."],
+["chmod","Fayl və qovluqların icazələrini dəyişən əmr."],
+["chown","Fayl və qovluğun sahibini dəyişən əmr."],
+["ls","Cari qovluqdakı faylları siyahılayan əmr."],
+["cd","Qovluqlar arasında keçid edən əmr."],
+["pwd","Cari qovluğun tam yolunu göstərən əmr."],
+["mkdir","Yeni qovluq yaradan əmr."],
+["rm","Fayl və ya qovluğu silən əmr."],
+["cp","Fayl və ya qovluğu köçürən (kopyalayan) əmr."],
+["mv","Fayl və ya qovluğu başqa yerə daşıyan/adını dəyişən əmr."],
+["cat","Faylın məzmununu ekrana çıxaran əmr."],
+["grep","Mətn içərisində müəyyən nümunəni axtaran əmr."],
+["nano","Terminalda istifadə olunan sadə mətn redaktoru."]
+],
+"Python": [
+["Variable","Proqramda dəyər saxlamaq üçün istifadə olunan adlandırılmış yaddaş yeri."],
+["Data Type","Dəyərin növünü (rəqəm, mətn və s.) təyin edən kateqoriya."],
+["Integer","Tam ədəd tipi (kəsr hissəsi olmayan)."],
+["Float","Kəsr (onluq) ədədləri təmsil edən verilənlər tipi."],
+["String","Mətn məlumatlarını təmsil edən verilənlər tipi."],
+["Boolean","Yalnız True/False (doğru/yalan) dəyərlərini ala bilən tip."],
+["List","Sıralanmış və dəyişdirilə bilən elementlər toplusu."],
+["Tuple","Sıralanmış, lakin dəyişdirilə bilməyən elementlər toplusu."],
+["Dictionary","Açar-dəyər cütlərindən ibarət verilənlər strukturu."],
+["Set","Təkrarlanmayan, sırasız elementlər toplusu."],
+["Function","Müəyyən tapşırığı yerinə yetirən, təkrar istifadə oluna bilən kod bloku."],
+["Parameter","Funksiya təyin edilərkən qəbul etdiyi dəyişənin adı."],
+["Argument","Funksiya çağırılarkən ötürülən faktiki dəyər."],
+["Loop","Müəyyən şərt ödənənə qədər kod bloku təkrarlayan struktur."],
+["if / else","Şərtə əsasən fərqli kod yollarının icra olunmasını təmin edən struktur."],
+["for","Müəyyən ardıcıllıq üzərində təkrarlanan dövr strukturu."],
+["while","Şərt doğru olduqca təkrarlanan dövr strukturu."],
+["Module","Yenidən istifadə üçün ayrıca fayla yazılmış Python kodu."],
+["Library","Hazır funksiyalardan ibarət kod toplusu."],
+["Package","Bir neçə modulu özündə birləşdirən qovluq strukturu."],
+["Exception","Proqramın icrası zamanı baş verən xəta hadisəsi."],
+["try / except","Xətaları tutub idarə etmək üçün istifadə olunan struktur."]
+],
+"Kriptoqrafiya": [
+["Plaintext","Şifrələnməmiş, oxunaqlı orijinal mətn."],
+["Ciphertext","Şifrələnmiş, oxunaqsız hala salınmış mətn."],
+["Symmetric Encryption","Şifrələmə və deşifrələmə üçün eyni açardan istifadə edən üsul."],
+["Asymmetric Encryption","Şifrələmə üçün ictimai, deşifrələmə üçün özəl açardan istifadə edən üsul."],
+["Public Key","Hər kəslə paylaşıla bilən, asimmetrik şifrələmədə istifadə olunan açıq açar."],
+["Private Key","Yalnız sahibinə məlum olan, məxfi saxlanılan açar."],
+["RSA","Ictimai açar əsasında işləyən geniş yayılmış asimmetrik şifrələmə alqoritmi."],
+["AES","Sürətli və təhlükəsiz simmetrik şifrələmə standartı."],
+["SHA-256","256 bitlik nəticə verən, geniş istifadə olunan hash alqoritmi."],
+["MD5","Köhnəlmiş, artıq təhlükəsiz sayılmayan hash alqoritmi."],
+["Hash Function","İstənilən uzunluqda datadan sabit ölçülü unikal iz yaradan funksiya."]
+],
+"Etik Hakerlik": [
+["Ethical Hacking","İcazə ilə sistemlərin zəifliklərini aşkarlamaq məqsədilə aparılan qanuni hakerlik."],
+["Penetration Testing","Sistemin təhlükəsizliyini real hücum simulyasiyası ilə yoxlama prosesi."],
+["Reconnaissance","Hədəf haqqında məlumat toplama mərhələsi."],
+["Scanning","Hədəf sistemdəki açıq portları və xidmətləri müəyyən etmə mərhələsi."],
+["Enumeration","Sistemdən istifadəçi adı, paylaşım kimi ətraflı məlumat toplama mərhələsi."],
+["Exploitation","Aşkarlanan zəiflikdən faktiki istifadə edərək sistemə giriş əldə etmə mərhələsi."],
+["Privilege Escalation","Sistemdə əldə edilən icazələri artıraraq daha yüksək səlahiyyət qazanma."],
+["Persistence","Hücumçunun sistemdə uzunmüddətli giriş imkanını qoruyub saxlaması."],
+["Capture The Flag (CTF)","Təhlükəsizlik bacarıqlarını sınamaq üçün keçirilən yarış formatı."],
+["OSINT","İctimai mənbələrdən açıq şəkildə əlçatan məlumatın toplanması."]
+]
+};
+
+/* ================== STATE ================== */
+const ALL_TERMS = [];
+Object.entries(DATA).forEach(([cat, terms]) => {
+  terms.forEach(([term, def]) => ALL_TERMS.push({term, def, cat}));
+});
+
+let mastered = {}; // term -> true
+let activeCat = "Hamısı";
+let flashPool = [];
+let flashIdx = 0;
+let flashFlipped = false;
+
+let quizPool = [];
+let quizIdx = 0;
+let quizScoreVal = 0;
+let quizAskedVal = 0;
+let quizAnswered = false;
+let quizDirection = 'def2term'; // 'def2term' | 'term2def' | 'mixed'
+
+/* ================== STORAGE ================== */
+async function loadProgress(){
+  try{
+    const res = await window.storage.get('mastered-terms', false);
+    if(res && res.value){ mastered = JSON.parse(res.value); }
+  }catch(e){ mastered = {}; }
+}
+async function saveProgress(){
+  try{ await window.storage.set('mastered-terms', JSON.stringify(mastered), false); }
+  catch(e){ /* ignore */ }
+}
+
+/* ================== INIT ================== */
+function shuffle(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function poolForCat(cat){
+  return cat==="Hamısı" ? ALL_TERMS : ALL_TERMS.filter(t=>t.cat===cat);
+}
+
+function updateStats(){
+  document.getElementById('statTotal').textContent = ALL_TERMS.length;
+  document.getElementById('statCats').textContent = Object.keys(DATA).length;
+  const m = Object.keys(mastered).filter(k=>mastered[k]).length;
+  document.getElementById('statMastered').textContent = m;
+  document.getElementById('statPct').textContent = Math.round((m/ALL_TERMS.length)*100) + '%';
+}
+
+function buildFilters(){
+  const wrap = document.getElementById('catFilters');
+  wrap.innerHTML = '';
+  const cats = ["Hamısı", ...Object.keys(DATA)];
+  cats.forEach(cat=>{
+    const chip = document.createElement('button');
+    chip.className = 'chip' + (cat===activeCat ? ' active' : '');
+    chip.textContent = cat;
+    chip.addEventListener('click', ()=>{
+      activeCat = cat;
+      document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+      chip.classList.add('active');
+      resetFlash();
+      resetQuiz();
+      renderList();
+    });
+    wrap.appendChild(chip);
+  });
+}
+
+/* ================== FLASHCARDS ================== */
+function resetFlash(){
+  flashPool = shuffle(poolForCat(activeCat));
+  flashIdx = 0;
+  flashFlipped = false;
+  renderFlash();
+}
+
+function renderFlash(){
+  const el = document.getElementById('flashcard');
+  const termEl = document.getElementById('flashTerm');
+  const tag = document.getElementById('flashCatTag');
+  if(flashPool.length===0){
+    termEl.textContent = 'Bu kateqoriyada termin yoxdur';
+    tag.textContent = activeCat;
+    return;
+  }
+  const item = flashPool[flashIdx];
+  tag.textContent = `${item.cat} · ${flashIdx+1}/${flashPool.length}`;
+  el.setAttribute('data-index', String(flashIdx+1).padStart(2,'0'));
+  el.className = 'flashcard' + (flashFlipped ? ' flipped' : '');
+  if(flashFlipped){
+    el.innerHTML = `<div class="def">${item.def}${mastered[item.term] ? ' <span style="color:#4fc3b0;">✓ bilirsən</span>' : ''}</div>`;
+  } else {
+    el.innerHTML = `<div class="term">${item.term}</div>`;
+  }
+}
+
+document.getElementById('flashcard').addEventListener('click', ()=>{
+  if(flashPool.length===0) return;
+  flashFlipped = !flashFlipped;
+  renderFlash();
+});
+
+document.getElementById('btnNext').addEventListener('click', ()=>{
+  if(flashPool.length===0) return;
+  flashIdx = (flashIdx+1) % flashPool.length;
+  flashFlipped = false;
+  renderFlash();
+});
+
+document.getElementById('btnKnow').addEventListener('click', async ()=>{
+  if(flashPool.length===0) return;
+  mastered[flashPool[flashIdx].term] = true;
+  await saveProgress();
+  updateStats();
+  document.getElementById('liveStatus').textContent = 'SAVED · +1 bilirəm';
+  flashIdx = (flashIdx+1) % flashPool.length;
+  flashFlipped = false;
+  renderFlash();
+  renderList();
+});
+
+document.getElementById('btnDontKnow').addEventListener('click', async ()=>{
+  if(flashPool.length===0) return;
+  mastered[flashPool[flashIdx].term] = false;
+  await saveProgress();
+  updateStats();
+  document.getElementById('liveStatus').textContent = 'SAVED · təkrar lazımdır';
+  flashIdx = (flashIdx+1) % flashPool.length;
+  flashFlipped = false;
+  renderFlash();
+  renderList();
+});
+
+document.getElementById('btnResetProgress').addEventListener('click', async ()=>{
+  if(!confirm('Bütün tərəqqi sıfırlansın? Bu geri qaytarıla bilməz.')) return;
+  mastered = {};
+  await saveProgress();
+  updateStats();
+  renderFlash();
+  renderList();
+});
+
+/* ================== QUIZ ================== */
+function resetQuiz(){
+  quizPool = shuffle(poolForCat(activeCat));
+  quizIdx = 0;
+  quizScoreVal = 0;
+  quizAskedVal = 0;
+  quizAnswered = false;
+  renderQuizQuestion();
+}
+
+function renderQuizQuestion(){
+  document.getElementById('quizScore').textContent = quizScoreVal;
+  document.getElementById('quizAsked').textContent = quizAskedVal;
+  document.getElementById('quizFeedback').textContent = '';
+  quizAnswered = false;
+
+  if(quizPool.length < 4){
+    document.getElementById('quizQuestion').textContent = 'Test üçün ən azı 4 termin lazımdır. Başqa kateqoriya seçin.';
+    document.getElementById('quizOptions').innerHTML = '';
+    document.getElementById('quizCatTag').textContent = activeCat;
+    return;
+  }
+
+  if(quizIdx >= quizPool.length){
+    quizPool = shuffle(quizPool);
+    quizIdx = 0;
+  }
+  const correct = quizPool[quizIdx];
+  document.getElementById('quizCatTag').textContent = `${activeCat} · ${quizIdx+1}/${quizPool.length}`;
+
+  let dir = quizDirection;
+  if(dir === 'mixed') dir = Math.random() < 0.5 ? 'def2term' : 'term2def';
+  const askingForDef = (dir === 'term2def'); // question shows term, options are definitions
+
+  document.getElementById('quizQLabel').textContent = askingForDef
+    ? 'bu terminə uyğun tərifi seç'
+    : 'bu tərifə uyğun termini seç';
+  document.getElementById('quizQuestion').textContent = askingForDef ? correct.term : correct.def;
+
+  const distractors = shuffle(ALL_TERMS.filter(t=>t.term!==correct.term)).slice(0,3);
+  const options = shuffle([correct, ...distractors]);
+  const optWrap = document.getElementById('quizOptions');
+  optWrap.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  options.forEach((opt, i)=>{
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    const label = askingForDef ? opt.def : opt.term;
+    btn.innerHTML = `<span class="k">${letters[i]}</span><span>${label}</span>`;
+    btn.addEventListener('click', ()=>handleQuizAnswer(opt, correct, btn, optWrap, askingForDef));
+    optWrap.appendChild(btn);
+  });
+}
+
+function handleQuizAnswer(chosen, correct, btnEl, wrap, askingForDef){
+  if(quizAnswered) return;
+  quizAnswered = true;
+  quizAskedVal++;
+  const isCorrect = chosen.term === correct.term;
+  if(isCorrect) quizScoreVal++;
+
+  const correctLabel = askingForDef ? correct.def : correct.term;
+  [...wrap.children].forEach(b=>b.classList.add('disabled'));
+  [...wrap.children].forEach(b=>{
+    if(b.textContent.includes(correctLabel)) b.classList.add('correct');
+  });
+  if(!isCorrect) btnEl.classList.add('wrong');
+
+  document.getElementById('quizFeedback').textContent = isCorrect
+    ? '✓ Düz cavab!'
+    : `✕ Səhv. Doğru cavab: ${correctLabel}`;
+  document.getElementById('quizFeedback').style.color = isCorrect ? '#4fc3b0' : '#e8654f';
+
+  document.getElementById('quizScore').textContent = quizScoreVal;
+  document.getElementById('quizAsked').textContent = quizAskedVal;
+}
+
+document.getElementById('btnQuizNext').addEventListener('click', ()=>{
+  quizIdx++;
+  renderQuizQuestion();
+});
+
+/* ================== LIST ================== */
+function renderList(){
+  const panel = document.getElementById('panel-list');
+  panel.innerHTML = '';
+  const cats = activeCat==="Hamısı" ? Object.keys(DATA) : [activeCat];
+  cats.forEach(cat=>{
+    const terms = DATA[cat];
+    const block = document.createElement('section');
+    block.className = 'cat-block';
+    block.innerHTML = `<div class="cat-title"><span>${cat}</span><span class="cnt">${terms.length} termin</span></div>`;
+    const grid = document.createElement('div');
+    grid.className = 'term-grid';
+    terms.forEach(([term, def])=>{
+      const card = document.createElement('div');
+      card.className = 'term-card';
+      card.innerHTML = `<div class="t">${term}${mastered[term] ? '<span class="mastered-mark">✓</span>' : ''}</div><div class="d">${def}</div>`;
+      grid.appendChild(card);
+    });
+    block.appendChild(grid);
+    panel.appendChild(block);
+  });
+}
+
+/* ================== TABS ================== */
+document.querySelectorAll('.mode-tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.mode-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    const mode = tab.dataset.mode;
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    document.getElementById('panel-'+mode).classList.add('active');
+  });
+});
+
+document.querySelectorAll('.dir-tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.dir-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    quizDirection = tab.dataset.dir;
+    quizIdx = 0;
+    quizPool = shuffle(quizPool);
+    renderQuizQuestion();
+  });
+});
+
+/* ================== FOOTER RANDOM TERM ================== */
+function setFooterTerm(){
+  const t = ALL_TERMS[Math.floor(Math.random()*ALL_TERMS.length)];
+  document.getElementById('footRandomTerm').textContent = `bilirsənmi? · ${t.term}`;
+}
+
+/* ================== BOOT ================== */
+(async function boot(){
+  await loadProgress();
+  buildFilters();
+  updateStats();
+  resetFlash();
+  resetQuiz();
+  renderList();
+  setFooterTerm();
+  setInterval(setFooterTerm, 8000);
+})();
+</script>
+</body>
+</html>
